@@ -1,16 +1,35 @@
 let PORT = process.env.PORT || 3000 ;
 
+const app = require('express')();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+const path = require('path');
 const users = {};
 
-const io = require('socket.io')(PORT , {
-    cors:{
-        origin:['http://127.0.0.1:5500']
-    }
+var options = {
+    root: path.join(__dirname , '../client/')
+};
+
+
+app.get('/' , (req , res)=>{
+    var options = {
+        root: path.join(__dirname , '../')
+    };
+    var fileName = 'index.html' ;
+    res.sendFile( fileName , options)
 })
+app.get('/client/style.css' , (req , res)=>{
+    var fileName = 'style.css' ;
+    res.sendFile( fileName , options)
+})
+app.get('/client/script.js' , (req , res)=>{
+    var fileName = 'script.js' ;
+    res.sendFile( fileName , options)
+})
+
 
 io.on('connection', socket =>{
     
-
     socket.on('new-user' , name=>{
         
         users[socket.id] = name;
@@ -27,3 +46,5 @@ io.on('connection', socket =>{
     })
     
 })
+
+server.listen(PORT , ()=>{console.log('http://localhost:'+PORT)});
