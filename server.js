@@ -1,32 +1,22 @@
-let PORT = process.env.PORT || 3000 ;
 
-const app = require('express')();
+
+let PORT = process.env.PORT || 3000 ;
+const express = require('express')
+const app = new express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-const path = require('path');
-const users = {};
 
-var options = {
-    root: path.join(__dirname , '../client/')
-};
 
+app.set( 'view engine' , 'ejs');
+app.set('views' , __dirname + '/views')
+app.use(express.static('public'))
 
 app.get('/' , (req , res)=>{
-    var options = {
-        root: path.join(__dirname , '../')
-    };
-    var fileName = 'index.html' ;
-    res.sendFile( fileName , options)
-})
-app.get('/client/style.css' , (req , res)=>{
-    var fileName = 'style.css' ;
-    res.sendFile( fileName , options)
-})
-app.get('/client/script.js' , (req , res)=>{
-    var fileName = 'script.js' ;
-    res.sendFile( fileName , options)
+
+    res.render( 'index' )
 })
 
+const users = {};
 
 io.on('connection', socket =>{
     
